@@ -1,26 +1,11 @@
 {
-  "$schema": "https://schema.tauri.app/config/2.0.0",
   "productName": "DJ Drive Organizer",
   "version": "0.1.0",
   "identifier": "com.tauri.dj-drive-organizer",
   "build": {
     "beforeDevCommand": "trunk serve --port 8082",
     "beforeBuildCommand": "trunk build",
-    "devUrl": "http://localhost:8082",
-    "frontendDist": "../dist"
-  },
-  "app": {
-    "windows": [
-      {
-        "title": "DJ Drive Organizer",
-        "width": 1200,
-        "height": 800,
-        "resizable": true,
-        "fullscreen": false
-      }
-    ],
-    "security": {
-      "csp": null
-    }
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:8082"
   }
 }
