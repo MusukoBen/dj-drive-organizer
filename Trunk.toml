@@ -1,2 +1,11 @@
 [build]
 dist = "dist"
+target = "frontend/index.html"
+
+[watch]
+ignore = ["src-tauri/**"]
+
+[serve]
+proxy_backend = "http://127.0.0.1:1420"   # Tauri dev server
+open = true
+port = 8080

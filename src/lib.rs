@@ -1,11 +1,6 @@
-use yew::prelude::*;
+// Main library crate that re-exports frontend functionality
+pub use dj_drive_organizer_frontend::components;
 
-#[function_component]
-pub fn App() -> Html {
-    html! {
-        <div>
-            <h1>{ "DJ Drive Organizer" }</h1>
-            <p>{ "Welcome to your DJ drive organizer!" }</p>
-        </div>
-    }
-}
+// For WASM builds, use the frontend's wasm_main
+#[cfg(target_arch = "wasm32")]
+pub use dj_drive_organizer_frontend::wasm_main;

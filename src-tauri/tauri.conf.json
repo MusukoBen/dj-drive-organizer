@@ -1,11 +1,21 @@
 {
   "productName": "DJ Drive Organizer",
   "version": "0.1.0",
-  "identifier": "com.tauri.dj-drive-organizer",
+  "identifier": "com.djdriveorganizer.app",
   "build": {
-    "beforeDevCommand": "trunk serve --port 8082",
+    "beforeDevCommand": "",
     "beforeBuildCommand": "trunk build",
-    "frontendDist": "../dist",
-    "devUrl": "http://localhost:8082"
+    "devUrl": "http://localhost:8082",
+    "frontendDist": "../dist"
+  },
+  "bundle": {},
+  "app": {
+    "windows": [
+      {
+        "title": "DJ Drive Organizer",
+        "width": 1200,
+        "height": 800
+      }
+    ]
   }
 }

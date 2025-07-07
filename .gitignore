@@ -1,1 +1,24 @@
+# Rust
 /target
+**/*.rs.bk
+Cargo.lock
+
+# Tauri
+/src-tauri/target
+
+# Build artifacts
+/dist
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
