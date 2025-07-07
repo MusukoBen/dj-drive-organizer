@@ -10,6 +10,10 @@ edition = "2024"
 [lib]
 crate-type = ["cdylib", "rlib"]
 
+[[bin]]
+name = "dj_drive_organizer_bin"
+path = "src/main.rs"
+
 [dependencies]
 yew = { version = "0.21", features = ["csr"] }
 wasm-bindgen = "0.2"
