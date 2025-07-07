@@ -1,13 +1,9 @@
-use gloo_events::EventListener;
 use serde::{Serialize, Deserialize};
 use wasm_bindgen_futures::spawn_local;
-use yew::prelude::*;
-use std::collections::HashMap;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::{JsCast, closure::Closure};
 use js_sys::Promise;
-use web_sys::console;
 
 // File metadata structure that matches the backend
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -35,7 +31,7 @@ pub struct AudioInfo {
 }
 
 // Drive scan progress event
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct ScanProgress {
     pub current_file: String,
     pub files_processed: u64,
@@ -43,50 +39,7 @@ pub struct ScanProgress {
     pub percentage: Option<f64>,
 }
 
-// Drive context for sharing state across components
-#[derive(Debug, Clone)]
-pub struct DriveContextData {
-    pub current_files: Vec<FileMeta>,
-    pub scan_progress: Option<ScanProgress>,
-    pub is_scanning: bool,
-    pub error: Option<String>,
-}
-
-impl Default for DriveContextData {
-    fn default() -> Self {
-        Self {
-            current_files: Vec::new(),
-            scan_progress: None,
-            is_scanning: false,
-            error: None,
-        }
-    }
-}
-
-pub type DriveContext = UseStateHandle<DriveContextData>;
-
-// Context provider component
-#[derive(Properties, PartialEq)]
-pub struct DriveContextProviderProps {
-    pub children: Children,
-}
-
-#[function_component]
-pub fn DriveContextProvider(props: &DriveContextProviderProps) -> Html {
-    let drive_context = use_state(DriveContextData::default);
-    
-    html! {
-        <ContextProvider<DriveContext> context={drive_context}>
-            {props.children.clone()}
-        </ContextProvider<DriveContext>>
-    }
-}
-
-// Hook for consuming the drive context
-#[hook]
-pub fn use_drive_context() -> DriveContext {
-    use_context::<DriveContext>().expect("DriveContext not found")
-}
+// Legacy context code removed - using minimal_drive_hooks instead
 
 // Wasm-bindgen bindings for Tauri API
 #[wasm_bindgen]
@@ -214,9 +167,10 @@ pub struct BackupResult {
 // Event handling functions
 pub fn emit_event(event_name: &str, payload: &impl Serialize) -> Result<(), JsValue> {
     let js_payload = serde_wasm_bindgen::to_value(payload).map_err(|_| JsValue::from_str("Serialization error"))?;
+    let event_name = event_name.to_string();
     
     spawn_local(async move {
-        let _ = wasm_bindgen_futures::JsFuture::from(tauri_emit(event_name, &js_payload)).await;
+        let _ = wasm_bindgen_futures::JsFuture::from(tauri_emit(&event_name, &js_payload)).await;
     });
     
     Ok(())
@@ -272,104 +226,5 @@ pub struct OrganizeProgress {
     pub current_operation: String, // "scanning", "organizing", "copying", "moving"
 }
 
-// Utility functions for the drive context
-impl DriveContextData {
-    pub fn set_files(&mut self, files: Vec<FileMeta>) {
-        self.current_files = files;
-        self.error = None;
-    }
-    
-    pub fn set_scanning(&mut self, is_scanning: bool) {
-        self.is_scanning = is_scanning;
-        if !is_scanning {
-            self.scan_progress = None;
-        }
-    }
-    
-    pub fn set_scan_progress(&mut self, progress: ScanProgress) {
-        self.scan_progress = Some(progress);
-    }
-    
-    pub fn set_error(&mut self, error: String) {
-        self.error = Some(error);
-        self.is_scanning = false;
-        self.scan_progress = None;
-    }
-    
-    pub fn clear_error(&mut self) {
-        self.error = None;
-    }
-    
-    pub fn get_audio_files(&self) -> Vec<&FileMeta> {
-        self.current_files.iter().filter(|f| f.is_audio).collect()
-    }
-    
-    pub fn get_files_by_extension(&self, extension: &str) -> Vec<&FileMeta> {
-        self.current_files
-            .iter()
-            .filter(|f| f.path.to_lowercase().ends_with(&extension.to_lowercase()))
-            .collect()
-    }
-}
 
-// High-level convenience functions that integrate with the context
-pub fn scan_drive_with_context(path: String, context: &DriveContext) {
-    let context_clone = context.clone();
-    
-    spawn_local(async move {
-        // Set scanning state
-        {
-            let mut data = (*context_clone).clone();
-            data.set_scanning(true);
-            data.clear_error();
-            context_clone.set(data);
-        }
-        
-        // Listen to progress updates
-        let progress_context = context_clone.clone();
-        let _ = listen_to_scan_progress(move |progress| {
-            let mut data = (*progress_context).clone();
-            data.set_scan_progress(progress);
-            progress_context.set(data);
-        });
-        
-        // Perform the scan
-        match invoke_scan_drive(path).await {
-            Ok(files) => {
-                let mut data = (*context_clone).clone();
-                data.set_files(files);
-                data.set_scanning(false);
-                context_clone.set(data);
-            }
-            Err(e) => {
-                let mut data = (*context_clone).clone();
-                data.set_error(format!("Scan failed: {}", e));
-                context_clone.set(data);
-            }
-        }
-    });
-}
-
-pub fn organize_files_with_context(
-    source_path: String,
-    target_path: String,
-    options: OrganizeOptions,
-    context: &DriveContext,
-) {
-    let context_clone = context.clone();
-    
-    spawn_local(async move {
-        match invoke_organize_files(source_path, target_path, options).await {
-            Ok(result) => {
-                // You might want to emit a success event or update the context
-                // depending on your application's needs
-                web_sys::console::log_1(&format!("Organization completed: {:?}", result).into());
-            }
-            Err(e) => {
-                let mut data = (*context_clone).clone();
-                data.set_error(format!("Organization failed: {}", e));
-                context_clone.set(data);
-            }
-        }
-    });
-}
+// Legacy drive state hooks removed - using minimal_drive_hooks instead

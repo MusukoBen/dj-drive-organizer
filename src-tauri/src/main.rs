@@ -16,5 +16,7 @@ fn main() {
             commands::get_file_metadata
         ])
         .run(tauri::generate_context!())
+        // Hinweis: Stelle sicher, dass die Datei unter src-tauri/icons/icon.png im RGBA-Format vorliegt
+        // Du kannst das Bild mit einem Bildbearbeitungsprogramm wie GIMP oder ImageMagick konvertieren
         .expect("error while running tauri application");
 }

@@ -740,8 +740,15 @@ dependencies = [
 name = "dj_drive_organizer_frontend"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
+ "chrono",
+ "gloo-events 0.2.0",
  "gloo-timers 0.3.0",
+ "js-sys",
  "log",
+ "serde",
+ "serde-wasm-bindgen 0.6.5",
+ "serde_json",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "wasm-logger",

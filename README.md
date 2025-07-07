@@ -60,8 +60,28 @@ Eine moderne DJ-Drive-Management-Anwendung, entwickelt mit **Rust + Yew** und **
 
 ### 🏃‍♂️ Entwicklung starten
 
+#### Voraussetzungen
+Bevor du mit der Entwicklung beginnst, stelle sicher, dass folgende Tools installiert sind:
+
 ```bash
-# Frontend entwickeln (Hot Reload)
+# Rust WASM-Target installieren
+rustup target add wasm32-unknown-unknown
+
+# Trunk installieren (falls nicht vorhanden)
+cargo install trunk
+```
+
+#### Entwicklungsworkflow
+
+**Option 1: Fullstack-Entwicklung (empfohlen)**
+```bash
+# Startet Backend + Frontend mit Hot Reload
+cargo tauri dev
+```
+
+**Option 2: Nur Frontend-Entwicklung**
+```bash
+# Nur Frontend mit Hot Reload
 trunk serve --open
 
 # Oder mit spezifischem Port

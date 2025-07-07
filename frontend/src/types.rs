@@ -53,40 +53,6 @@ pub enum DriveType {
     External,
 }
 
-/// App-State für die gesamte Anwendung
-#[derive(Debug, Clone, PartialEq)]
-pub struct AppState {
-    pub tracks: Vec<Track>,
-    pub drives: Vec<Drive>,
-    pub selected_drive: Option<String>,
-    pub search_query: String,
-    pub filter_genre: Option<String>,
-    pub is_syncing: bool,
-    pub last_sync: Option<String>,
-    pub current_tab: AppTab,
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub enum AppTab {
-    Tracks,
-    Playlists,
-    SyncProfiles,
-}
-
-impl Default for AppState {
-    fn default() -> Self {
-        Self {
-            tracks: Vec::new(),
-            drives: Vec::new(),
-            selected_drive: None,
-            search_query: String::new(),
-            filter_genre: None,
-            is_syncing: false,
-            last_sync: None,
-            current_tab: AppTab::Tracks,
-        }
-    }
-}
 
 /// Playlist-Struktur
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
